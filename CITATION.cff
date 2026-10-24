@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+type: software
+title: "Noble-gas positron cooling: MSci thesis and companion code"
+message: >-
+  Please cite the MSci report for the thesis results. When using the code,
+  also record the repository URL and exact commit used.
+authors:
+  - family-names: Louw
+    given-names: Connor
+    affiliation: "Queen's University Belfast"
+repository-code: "https://github.com/clouw2003/Fokker-Planck-for-Positron-cooling-and-annihilation"
+preferred-citation:
+  type: thesis
+  title: "Fokker-Planck Equation for Positron Cooling and Annihilation"
+  authors:
+    - family-names: Louw
+      given-names: Connor
+  institution:
+    name: "Queen's University Belfast"
+  year: 2026
+  thesis-type: "MSci project report"
+  url: "https://github.com/clouw2003/Fokker-Planck-for-Positron-cooling-and-annihilation/blob/main/Fokker_Planck_Dissertation.pdf"

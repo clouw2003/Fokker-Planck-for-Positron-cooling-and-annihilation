@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Fri Apr 17 15:30:47 2026
+"""Run the thesis-era xenon cooling and annihilation example.
 
-@author: clouw
-"""
+Generate both input tables first; see README.md. Paths are relative to the
+repository, so the script also works when launched from Spyder.
+Original filename: xenon code.py."""
+
+from pathlib import Path
 
 import numpy as np
+
+ROOT = Path(__file__).resolve().parents[1]
+DATA_DIR = ROOT / "data"
+RESULTS_DIR = ROOT / "results"
 
 # ============================================================
 # Xenon cooling and annihilation solver
@@ -49,14 +55,21 @@ alpha = D0 * (Tgas / M_Xe)
 # ----------------------------
 # 3. Load transport and annihilation data
 # ----------------------------
+for filename in ("xe_sigma_m_01res.txt", "xe_zeff_total_on_grid.txt"):
+    if not (DATA_DIR / filename).is_file():
+        raise FileNotFoundError(
+            f"Missing {DATA_DIR / filename}. Run scripts/generate_xe_sigma_m.py "
+            "and scripts/generate_xe_zeff.py first; see README.md."
+        )
+
 # Momentum-transfer cross section sigma_m(p)
-sigma_data = np.loadtxt("xe_sigma_m_01res.txt")
+sigma_data = np.loadtxt(DATA_DIR / "xe_sigma_m_01res.txt")
 p_sigma = sigma_data[:, 0]
 sigma_tab = sigma_data[:, 1]
 sigma_node = np.interp(p, p_sigma, sigma_tab)
 
 # Zeff(p)
-zeff_data = np.loadtxt("xe_zeff_total_on_grid.txt")
+zeff_data = np.loadtxt(DATA_DIR / "xe_zeff_total_on_grid.txt")
 p_zeff = zeff_data[:, 0]
 zeff_tab = zeff_data[:, 1]
 zeff_node = np.interp(p, p_zeff, zeff_tab)
@@ -208,8 +221,6 @@ else:
 # ----------------------------
 # 9. Late-time annihilation diagnostics
 # ----------------------------
-n_tail = max(5, len(zeff_avg_hist) // 10)
-
 zbar_final = zeff_avg_hist[-1]
 
 print("\nLate-time diagnostics:")
@@ -220,8 +231,10 @@ print(f"Final Zbar_eff                     = {zbar_final:.8f}")
 # ----------------------------
 # 10. Save output for plotting
 # ----------------------------
+RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 np.savetxt(
-    "xe_diagnostics.txt",
+    RESULTS_DIR / "xe_diagnostics.txt",
     np.column_stack((tau_hist, N_hist, lambda_avg_hist, zeff_avg_hist, Ebar_hist)),
     header="tau  N(tau)  lambda_bar(tau)  Zbar_eff(tau)  Ebar(tau)"
 )
+print(f"Saved {RESULTS_DIR / 'xe_diagnostics.txt'}")

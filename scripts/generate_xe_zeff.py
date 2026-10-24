@@ -1,12 +1,17 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Fri Apr 17 16:04:58 2026
+"""Generate the xenon annihilation table in data/.
 
-@author: clouw
-"""
+Input values: Green, Ludlow and Gribakin, Phys. Rev. A 90, 032712 (2014),
+Table VII, https://doi.org/10.1103/PhysRevA.90.032712.
+Original filename: Xenon MBT.py."""
+
+from pathlib import Path
 
 import numpy as np
 from scipy.interpolate import PchipInterpolator
+
+DATA_DIR = Path(__file__).resolve().parents[1] / "data"
+DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 # ------------------------------------------------------------
 # Build the xenon total Zeff(p) table used by the solver.
@@ -85,7 +90,8 @@ p_grid = np.arange(0.0, 0.6000001, 0.01)
 Z_grid = np.maximum(interp(p_grid), 0.0)
 
 np.savetxt(
-    "xe_zeff_total_on_grid.txt",
+    DATA_DIR / "xe_zeff_total_on_grid.txt",
     np.column_stack((p_grid, Z_grid)),
     header="p  Zeff_total"
 )
+print(f"Saved {DATA_DIR / 'xe_zeff_total_on_grid.txt'}")
